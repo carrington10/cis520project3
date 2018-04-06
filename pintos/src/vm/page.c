@@ -50,8 +50,13 @@ page_for_addr (const void *address)
       if (e != NULL)
         return hash_entry (e, struct page, hash_elem);
 
-      /* No page.  Expand stack? */
-
+     struct thread * cur_thread = thread_current();
+     
+     if( (cur_thread->user_esp <= cur_thread->stack_boundary) && ((unsigned)address > PHYS_BASE - STACK_MAX) ) {
+        cur_thread->stack_boundary -= PGSIZE;
+        return(page_allocate(address, false));
+     }
+     
 /* add code */
 
     }
