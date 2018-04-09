@@ -562,8 +562,12 @@ sys_munmap (int mapping)
 {
 /* add code here */
 
+  /* Get the map corresponding to the given map id, and attempt to unmap. */
+  struct mapping *map = lookup_mapping(mapping); // CJHughes repository
+  unmap(map);
   return 0;
 }
+
  
 /* On thread exit, close all open files and unmap all mappings. */
 void
