@@ -1,0 +1,133 @@
+		           +---------------------------+
+       	           |         CIS 520           |
+		           | PROJECT 3: Virtual Memory |
+		           |     DESIGN DOCUMENT       |
+		           +---------------------------+
+
+---- GROUP ----
+
+>> Fill in the names of your group members.
+
+Reagan "Machine Gun" Wood
+Nick "The Undertaker" Goins
+Carrington "The Unicorn" Cooper
+
+---- PRELIMINARIES ----
+
+>> If you have any preliminary comments on your submission, notes for the
+>> TAs, or extra credit, please give them here.
+
+>> Please cite any offline or online sources you consulted while
+>> preparing your submission, other than the Pintos documentation, course
+>> text, lecture notes, and course staff.
+
+We went to a lot of office hours, but did not use any online recourses. 
+
+			PAGE TABLE MANAGEMENT
+			=====================
+---- ALGORITHMS ----
+
+>> A1: In a few paragraphs, describe the existing code for locating the
+>> frame, if any, that contains the data of a given page.
+
+Basically, the code checks to see if the page can be accessed (correct permissions). However, if the page is invalid, we need to check if that page is actually suppossed
+to be loaded. If it is not suppossed to be loaded, then nothing needs to be done. If the page never existed, it can potentially be created and added into the stack depending on stack size.
+
+
+---- SYNCHRONIZATION ----
+
+>> A2: When two user processes both need a new frame at the same time,
+>> how are races avoided?
+
+
+
+		       PAGING TO AND FROM DISK
+		       =======================
+
+---- ALGORITHMS ----
+
+>> B1: When a frame is required but none is free, some frame must be
+>> evicted.  Describe the algorithm used to choose a frame to evict.
+
+The frames are looked over to see if any memory is free. Then that data will be swapped out. However, if there are no free memory spaces, then the system looks for an address to swap. The address that is least used will be put onto disk, freed, and then assigned to the 
+new physical address. The same process will happen if a new page needs to be created. 
+
+>> B2: Explain your heuristic for deciding whether a page fault for an
+>> invalid virtual address should cause the stack to be extended into
+>> the page that faulted.
+
+First you check to see if the user esp is less than or euql to the current thread stack boundary. Another check is also done to see if the address greater than the base minus the stack max. If both of these are true, we know that the stack needs to be extended because there's not enough room for the page.
+Then, we need to get change the stack_boundary by subtracting the page size from the stack boundary of the thread. Then we allocate the page.
+
+			 MEMORY MAPPED FILES
+			 ===================
+
+---- DATA STRUCTURES ----
+
+>> C1: Copy here the declaration of each new or changed `struct' or
+>> `struct' member, global or static variable, `typedef', or
+>> enumeration.  Identify the purpose of each in 25 words or less.
+
+struct thread *cur = thread_current (); 
+struct list_elem *e, *next;
+t->stack_boundary = (void *)PHYS_BASE - PGSIZE;
+void *stack_boundary;
+
+---- ALGORITHMS ----
+
+>> C2: Describe how memory mapped files integrate into your virtual
+>> memory subsystem.  Explain how the page fault and eviction
+>> processes differ between swap pages and other pages.
+
+everything is in a mapping functiont that keeps track of where it is in memory and its file that it is mapped to. Each thread keeps track of its maps which is used
+to help determine what needs to be kept in memory or written off to disk. Swap partition is avoided for mapped files.
+
+
+
+>> C3: Explain how you determine whether a new file mapping overlaps
+>> any existing segment.
+
+---- RATIONALE ----
+
+>> C4: Mappings created with "mmap" have similar semantics to those of
+>> data demand-paged from executables, except that "mmap" mappings are
+>> written back to their original files, not to swap.  This implies
+>> that much of their implementation can be shared.  Explain why your
+>> implementation either does or does not share much of the code for
+>> the two situations.
+
+the code is shared between them, all pages with be paged out the same way, there is however a difference that decides whether or not a particular
+page should be written back out to disk. if its private its swapped with the swap partition and if it isnt it is written out on disk.
+			   SURVEY QUESTIONS
+			   ================
+
+Answering these questions is optional, but it will help us improve the
+course in future quarters.  Feel free to tell us anything you
+want--these questions are just to spur your thoughts.  You may also
+choose to respond anonymously in the course evaluations at the end of
+the quarter.
+
+>> In your opinion, was this assignment, or any one of the three problems
+>> in it, too easy or too hard?  Did it take too long or too little time?
+
+The assignment was easier than assignment 2. It took less time than we expected. That's because we went to office hours though to learn the material.
+
+>> Did you find that working on a particular part of the assignment gave
+>> you greater insight into some aspect of OS design?
+
+Yes, learning about paging was useful for learning more about os.
+
+>> Is there some particular fact or hint we should give students in
+>> future quarters to help them solve the problems?  Conversely, did you
+>> find any of our guidance to be misleading?
+
+Go to office hours!
+
+>> Do you have any suggestions for the TAs to more effectively assist
+>> students, either for future quarters or the remaining projects?
+
+Not applicable 
+
+>> Any other comments?
+
+Not Applicable
